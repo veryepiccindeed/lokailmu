@@ -19,6 +19,7 @@ class Sekolah extends Model
      */
     protected $fillable = [
         'NPSN',
+        'namaSekolah',
         'alamatSekolah',
     ];
 

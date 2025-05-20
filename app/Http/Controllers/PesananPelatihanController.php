@@ -65,7 +65,15 @@ class PesananPelatihanController extends Controller
     // Show detail order
     public function show($id)
     {
+        $user = request()->user();
         $order = PendaftaranPelatihan::with(['pelatihan', 'user'])->findOrFail($id);
+        
+        // Validasi: hanya guru yang membuat pesanan atau mentor yang terkait yang bisa lihat
+        if ($user->idUser !== $order->idUser && 
+            (!$order->pelatihan || $order->pelatihan->idMentor !== $user->idUser)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
         return response()->json($order);
     }
 } 

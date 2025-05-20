@@ -18,8 +18,8 @@ Route::post('/register-mentor', [Authentication::class, 'registerMentor']);
 // Yg butuh middleware
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [Authentication::class, 'logout']);
-    Route::get('pesanan-pelatihan', [PesananPelatihanController::class, 'index']);
-    Route::post('pesanan-pelatihan', [PesananPelatihanController::class, 'store']);
-    Route::get('pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
+    Route::get('/pesanan-pelatihan', [PesananPelatihanController::class, 'index']);
+    Route::post('/pesan-pelatihan', [PesananPelatihanController::class, 'store']);
+    Route::get('/pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
     Route::patch('pesanan-pelatihan/{id}/status', [PesananPelatihanController::class, 'updateStatus']);
 });
