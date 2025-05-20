@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('threadforum', function (Blueprint $table) {
+        Schema::table('threadforums', function (Blueprint $table) {
             $table->dropForeign('FK_idPost_postUtama');
         });
     }

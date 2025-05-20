@@ -35,7 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('forumpost', function (Blueprint $table) {
+        Schema::table('forumposts', function (Blueprint $table) {
             $table->dropForeign('FK_idThread_forumPost');
             $table->dropForeign('FK_idUser_forumPost');
             $table->dropForeign('FK_idPost_parentPost');

@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('profilgurus', function (Blueprint $table) {
-            $table->foreign('idSekolah', 'FK_idSekolahr_profilGuru') // Nama constraint dari SQL
-            ->references('idSekolah')->on('sekolahs')
-            ->onDelete('no action') // Sesuaikan jika perlu
-            ->onUpdate('no action');
-
           // idUser adalah primary key di profilguru, tapi juga foreign key ke user
             $table->foreign('idUser', 'FK_idUser_profilGuru')
             ->references('idUser')->on('users')
             ->onDelete('no action') // Mungkin 'cascade' lebih cocok di sini? Jika user dihapus, profilnya juga.
+            ->onUpdate('no action');
+            
+            // Menambahkan foreign key untuk NPSN
+            $table->foreign('NPSN', 'FK_NPSN_profilGuru')
+            ->references('NPSN')->on('sekolahs')
+            ->onDelete('no action')
             ->onUpdate('no action');
          });
     }

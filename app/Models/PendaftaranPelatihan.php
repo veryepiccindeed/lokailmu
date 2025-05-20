@@ -25,6 +25,7 @@ class PendaftaranPelatihan extends Model
         'idUser',
         'tglMulai',
         'tglSelesai',
+        'status',
     ];
 
     /**

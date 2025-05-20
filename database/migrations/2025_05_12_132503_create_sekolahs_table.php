@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('sekolahs', function (Blueprint $table) {
             $table->integer('idSekolah')->primary(); // Primary Key INT
-            $table->string('NPSN', 15)->unique(); // NPSN harus unik
+            $table->integer('NPSN', false, true)->length(8)->unique(); 
+            $table->string('namaSekolah', 255);
             $table->string('alamatSekolah', 255);
             $table->timestamps();
         });

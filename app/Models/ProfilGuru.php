@@ -22,7 +22,7 @@ class ProfilGuru extends Model
     protected $fillable = [
         'idUser',
         'NUPTK',
-        'idSekolah',
+        'NPSN',
         'tingkatPengajar',
         'pathKTP',
     ];
