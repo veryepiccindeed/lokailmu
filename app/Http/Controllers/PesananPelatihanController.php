@@ -30,18 +30,27 @@ class PesananPelatihanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'idPelatihan' => 'required|exists:pelatihans,idPelatihan',
-            'tglMulai' => 'required|date',
-            'tglSelesai' => 'required|date|after_or_equal:tglMulai',
+            'tglMulai' => 'required|date|after:today',
+            'tglSelesai' => 'required|date|after:tglMulai',
         ]);
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+    
+        // Validasi role
+        if (!$request->user()->profilGuru) {
+            return response()->json(['error' => 'Only teachers can register for training'], 403);
+        }
+    
         $order = PendaftaranPelatihan::create([
             'idPelatihan' => $request->idPelatihan,
             'idUser' => $request->user()->idUser,
             'tglMulai' => $request->tglMulai,
             'tglSelesai' => $request->tglSelesai,
+            'status' => 'pending'
         ]);
+    
         broadcast(new PesananPelatihanUpdated($order))->toOthers();
         return response()->json($order, 201);
     }
@@ -50,15 +59,27 @@ class PesananPelatihanController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:ongoing,done',
+            'status' => 'required|in:pending,ongoing,done,cancelled',
         ]);
+        
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+    
         $order = PendaftaranPelatihan::findOrFail($id);
+        
+        // Validasi: hanya mentor yang bisa update status
+        if (!$request->user()->profilMentor || 
+            $order->pelatihan->idMentor !== $request->user()->idUser) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+    
+        $oldStatus = $order->status;
         $order->status = $request->status;
         $order->save();
+        
         broadcast(new PesananPelatihanUpdated($order))->toOthers();
+        
         return response()->json($order);
     }
 

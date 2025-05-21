@@ -14,4 +14,12 @@ class IdGenerator
 
         return $id;
     }
+
+    public static function generatePelatihanId()
+    {
+        $prefix = 'PLT';
+        $timestamp = substr(time(), -4); // Ambil 4 digit terakhir dari timestamp
+        $random = rand(1000, 9999);
+        return $prefix . $timestamp . $random;
+    }
 }

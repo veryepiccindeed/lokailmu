@@ -23,5 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pesanan-pelatihan', [PesananPelatihanController::class, 'index']);
     Route::post('/pesan-pelatihan', [PesananPelatihanController::class, 'store']);
     Route::get('/pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
-    Route::patch('/pesanan-pelatihan/{id}/status', [PesananPelatihanController::class, 'updateStatus']);
+    Route::put('/pesanan-pelatihan/{id}/status', [PesananPelatihanController::class, 'updateStatus']);
 });

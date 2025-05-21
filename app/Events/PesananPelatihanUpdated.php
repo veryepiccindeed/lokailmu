@@ -25,7 +25,11 @@ class PesananPelatihanUpdated implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new PrivateChannel('pesanan-pelatihan.' . $this->order->idPelatihan);
+        return [
+            new PrivateChannel('pesanan-pelatihan.' . $this->order->idPelatihan),
+            new PrivateChannel('user.' . $this->order->idUser),
+            new PrivateChannel('mentor.' . $this->order->pelatihan->idMentor)
+        ];
     }
 
     public function broadcastWith()
@@ -39,4 +43,4 @@ class PesananPelatihanUpdated implements ShouldBroadcastNow
     {
         return 'PesananPelatihanUpdated';
     }
-} 
+}
