@@ -11,6 +11,8 @@ class DaftarBukuOffline extends Model
 
     protected $table = 'daftarbukuofflines';
     protected $primaryKey = 'idOffline';
+    public $incrementing = false; // Tambahkan ini
+    protected $keyType = 'string';   // Tambahkan ini
     public $timestamps = false; // Karena ada tglDownload dan tglAkses, bukan created_at/updated_at
 
     protected $fillable = [

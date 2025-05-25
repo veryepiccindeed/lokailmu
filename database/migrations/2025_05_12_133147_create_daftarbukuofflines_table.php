@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('daftarbukuofflines', function (Blueprint $table) {
-            $table->integer('idOffline')->primary(); // Primary Key INT
+            $table->string('idOffline')->primary(); // Diubah dari integer ke string
             $table->string('idBuku', 12); // Foreign key
             $table->string('idUser', 12); // Foreign key
             $table->string('pathCache', 255);

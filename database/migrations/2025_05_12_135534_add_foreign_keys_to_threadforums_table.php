@@ -17,6 +17,11 @@ return new class extends Migration
            ->references('idPost')->on('forumposts')
            ->onDelete('no action')
            ->onUpdate('no action');
+
+           $table->foreign('dibuatOleh', 'FK_dibuatOleh_users') // Added foreign key for dibuatOleh
+           ->references('idUser')->on('users')
+           ->onDelete('cascade') // Or your preferred onDelete action
+           ->onUpdate('cascade'); // Or your preferred onUpdate action
         });
     }
 
@@ -27,6 +32,7 @@ return new class extends Migration
     {
         Schema::table('threadforums', function (Blueprint $table) {
             $table->dropForeign('FK_idPost_postUtama');
+            $table->dropForeign('FK_dibuatOleh_users'); // Added dropForeign for dibuatOleh
         });
     }
 };

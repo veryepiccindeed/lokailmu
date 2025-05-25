@@ -33,6 +33,8 @@ class ForumPost extends Model
         'tglPost' => 'datetime',
     ];
 
+    public $timestamps = false;
+
     public function threadForum()
     {
         return $this->belongsTo(ThreadForum::class, 'idThread', 'idThread');
@@ -62,4 +64,4 @@ class ForumPost extends Model
     {
         return $this->hasMany(MediaForum::class, 'idPost', 'idPost');
     }
-} 
+}

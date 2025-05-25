@@ -22,7 +22,9 @@ class SekolahFactory extends Factory
     public function definition(): array
     {
         return [
+            'idSekolah' => $this->faker->unique()->numberBetween(1, 999999),
             'NPSN' => $this->faker->unique()->numerify('########'), // 8 digit NPSN
+            'namaSekolah' => $this->faker->company(),
             'alamatSekolah' => $this->faker->address(),
         ];
     }
