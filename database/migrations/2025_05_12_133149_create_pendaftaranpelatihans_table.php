@@ -15,10 +15,10 @@ return new class extends Migration
             $table->bigIncrements('id'); // Primary Key BIGINT Auto Increment
             $table->string('idPelatihan', 15); // Foreign key
             $table->string('idUser', 12); // Foreign key
+            $table->enum('status', ['pending', 'ongoing', 'done', 'cancelled'])->default('pending');
             $table->timestamp('tglMulai')->useCurrent();
-            // Default current_timestamp() untuk tglSelesai mungkin tidak ideal,
-            // tapi kita ikuti SQLnya dulu. Mungkin perlu diubah nanti.
             $table->timestamp('tglSelesai')->useCurrent();
+            $table->timestamps();
 
             // Indexes
             $table->index('idPelatihan');
