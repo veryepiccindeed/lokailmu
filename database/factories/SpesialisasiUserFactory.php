@@ -13,8 +13,8 @@ class SpesialisasiUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'idUser' => User::factory(), // Or User::inRandomOrder()->first()->idUser
+            'idUser' => \App\Models\User::factory(),
             'spesialisasi' => $this->faker->jobTitle(),
         ];
     }
-} 
+}

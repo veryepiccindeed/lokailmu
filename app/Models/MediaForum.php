@@ -22,8 +22,10 @@ class MediaForum extends Model
         'urlMedia',
     ];
 
+    public $timestamps = false;
+
     public function forumPost()
     {
         return $this->belongsTo(ForumPost::class, 'idPost', 'idPost');
     }
-} 
+}

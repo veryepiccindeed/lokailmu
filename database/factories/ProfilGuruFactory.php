@@ -14,11 +14,11 @@ class ProfilGuruFactory extends Factory
     public function definition(): array
     {
         return [
-            'idUser' => User::factory(), // Creates a new User or use User::inRandomOrder()->first()->idUser if users are already seeded
+            'idUser' => \App\Models\User::factory(),
             'NUPTK' => $this->faker->unique()->numerify('################'), // 16 digit NUPTK
-            'idSekolah' => Sekolah::factory(), // Creates a new Sekolah or use Sekolah::inRandomOrder()->first()->idSekolah
+            'NPSN' => \App\Models\Sekolah::factory()->create()->NPSN, // Diubah dari idSekolah ke NPSN
             'tingkatPengajar' => $this->faker->randomElement(['SD', 'SMP', 'SMA']),
             'pathKTP' => 'ktp_images/' . $this->faker->lexify('????????????') . '.jpg',
         ];
     }
-} 
+}

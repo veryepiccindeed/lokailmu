@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('threadforums', function (Blueprint $table) {
-            $table->bigIncrements('idThread'); // Primary Key BIGINT Auto Increment
+            $table->string('idThread')->primary();
             $table->string('judul', 255);
-            $table->unsignedBigInteger('idPostUtama'); // Foreign key akan ditambahkan nanti
+            $table->string('dibuatOleh');
+            $table->unsignedBigInteger('idPostUtama')->nullable(); // Changed back to unsignedBigInteger
             $table->timestamps();
 
             // Index untuk foreign key
             $table->index('idPostUtama');
+            $table->index('dibuatOleh');
         });
     }
 

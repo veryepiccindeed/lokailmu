@@ -13,6 +13,7 @@ class ProfilGuru extends Model
     protected $primaryKey = 'idUser';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +35,6 @@ class ProfilGuru extends Model
 
     public function sekolah()
     {
-        return $this->belongsTo(Sekolah::class, 'idSekolah', 'idSekolah');
+        return $this->belongsTo(Sekolah::class, 'NPSN', 'NPSN'); // Sesuaikan foreign key dan owner key ke NPSN
     }
-} 
+}

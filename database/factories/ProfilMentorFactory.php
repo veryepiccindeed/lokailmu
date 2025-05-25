@@ -13,9 +13,9 @@ class ProfilMentorFactory extends Factory
     public function definition(): array
     {
         return [
-            'idUser' => User::factory(), // Or User::inRandomOrder()->first()->idUser
+            'idUser' => \App\Models\User::factory(),
             'pathCV' => 'cvs/' . $this->faker->lexify('????????????') . '.pdf',
             'pathSertifikat' => 'sertifikats/' . $this->faker->lexify('????????????') . '.pdf',
         ];
     }
-} 
+}

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('forumposts', function (Blueprint $table) {
             $table->bigIncrements('idPost'); // Primary Key BIGINT Auto Increment
-            $table->unsignedBigInteger('idThread'); // Foreign key
+            $table->string('idThread'); // Diubah dari unsignedBigInteger ke string
             $table->string('dibuatOleh', 12); // Foreign key
             $table->text('isi');
             $table->unsignedBigInteger('parentPost')->nullable(); // Foreign key (self-reference)
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('forumpost');
+        Schema::dropIfExists('forumposts');
     }
 };

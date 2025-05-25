@@ -21,6 +21,8 @@ class Tag extends Model
         'tag',
     ];
 
+    public $timestamps = false;
+
     /**
      * The thread forums that belong to the tag.
      */
@@ -28,4 +30,4 @@ class Tag extends Model
     {
         return $this->belongsToMany(ThreadForum::class, 'tagthreads', 'idTag', 'idThread');
     }
-} 
+}

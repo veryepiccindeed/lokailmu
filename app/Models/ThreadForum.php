@@ -11,9 +11,13 @@ class ThreadForum extends Model
 
     protected $table = 'threadforums';
     protected $primaryKey = 'idThread';
+    public $incrementing = false; // Indicate that the primary key is not auto-incrementing
+    protected $keyType = 'string';   // Indicate that the primary key is a string
 
     protected $fillable = [
+        'idThread', // If you intend to set it via mass assignment sometimes
         'judul',
+        'dibuatOleh', // Added 'dibuatOleh' to fillable properties
         'idPostUtama',
     ];
 
@@ -40,4 +44,4 @@ class ThreadForum extends Model
     {
         return $this->belongsToMany(Tag::class, 'tagthreads', 'idThread', 'idTag');
     }
-} 
+}

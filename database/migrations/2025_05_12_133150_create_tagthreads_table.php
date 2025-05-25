@@ -15,7 +15,7 @@ return new class extends Migration
             // Tabel pivot (many-to-many) antara threadforum dan tag
             // SQL asli memiliki UNIQUE KEY terpisah, yang aneh.
             // Cara Laravel yang umum adalah composite primary key.
-            $table->unsignedBigInteger('idThread'); // Foreign key
+            $table->string('idThread'); // Diubah dari unsignedBigInteger ke string
             $table->integer('idTag'); // Foreign key
 
             // Composite primary key untuk memastikan kombinasi unik
