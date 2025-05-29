@@ -4,20 +4,19 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Pelatihan;
-use App\Models\User; // Import User model
+use App\Models\ProfilMentor; // Import ProfilMentor
 use App\Helpers\IdGenerator;
 
 class PelatihanSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil satu user secara acak untuk dijadikan mentor
-        // Pastikan UserSeeder atau UserFactory sudah dijalankan sebelumnya
-        $mentor = User::inRandomOrder()->first();
+        // Ambil semua mentor yang sudah ada di tabel profilmentors
+        $mentors = ProfilMentor::pluck('idUser')->toArray();
 
-        // Jika tidak ada user sama sekali, buat satu user baru sebagai mentor
-        if (!$mentor) {
-            $mentor = User::factory()->create();
+        // Jika tidak ada mentor sama sekali, hentikan seeder
+        if (empty($mentors)) {
+            return;
         }
 
         $pelatihans = [
@@ -48,13 +47,15 @@ class PelatihanSeeder extends Seeder
             ]
         ];
 
-        foreach ($pelatihans as $pelatihanData) {
+        // Assign mentor secara bergantian ke pelatihan
+        $mentorCount = count($mentors);
+        foreach ($pelatihans as $i => $pelatihanData) {
             Pelatihan::create([
                 'idPelatihan' => IdGenerator::generatePelatihanId(),
                 'judul' => $pelatihanData['judul'],
                 'deskripsi' => $pelatihanData['deskripsi'],
                 'biaya' => $pelatihanData['biaya'],
-                'idMentor' => $mentor->idUser // Gunakan idUser dari mentor yang diambil/dibuat
+                'idMentor' => $mentors[$i % $mentorCount] // Rotasi mentor
             ]);
         }
     }
