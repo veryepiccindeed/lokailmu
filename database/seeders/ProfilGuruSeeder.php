@@ -11,26 +11,27 @@ class ProfilGuruSeeder extends Seeder
 {
     public function run(): void
     {
-        // Attempt to create profiles for a subset of existing users, if available
-        // This assumes UserSeeder and SekolahSeeder have run
-        $users = User::inRandomOrder()->take(5)->get();
+        // Ambil 3 user acak yang belum punya profil guru
+        $users = User::doesntHave('profilGuru')->inRandomOrder()->take(3)->get();
         $sekolahs = Sekolah::inRandomOrder()->get();
 
         if ($users->isEmpty() || $sekolahs->isEmpty()) {
-            // Fallback to creating new users/sekolahs via factory if none exist
-            ProfilGuru::factory()->count(5)->create();
+            // Jika tidak ada user atau sekolah, buat dummy via factory
+            ProfilGuru::factory()->count(3)->create([
+                'pathKTP' => null,
+            ]);
             return;
         }
 
         foreach ($users as $user) {
-            // Ensure a user doesn't get multiple guru profiles from this seeder run
-            if ($user->profilGuru()->exists()) {
-                continue;
-            }
+            // Ambil sekolah acak untuk relasi NPSN
+            $sekolah = $sekolahs->random();
             ProfilGuru::factory()->create([
                 'idUser' => $user->idUser,
-                'idSekolah' => $sekolahs->random()->idSekolah,
+                'NPSN' => $sekolah->NPSN,
+                'pathKTP' => null,
+                // Field lain akan diisi oleh factory
             ]);
         }
     }
-} 
+}

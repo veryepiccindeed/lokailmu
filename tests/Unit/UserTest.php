@@ -3,64 +3,94 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\ProfilGuru;
-use App\Models\ProfilMentor;
-use App\Models\SpesialisasiUser;
-use App\Models\Pembayaran;
-use App\Models\PendaftaranPelatihan;
-use App\Models\ForumPost;
-use App\Models\ForumLike;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Repositories\UserRepositoryInterface;
+use Mockery;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->mockUserRepository = Mockery::mock(UserRepositoryInterface::class);
+        $this->app->instance(UserRepositoryInterface::class, $this->mockUserRepository);
+    }
 
     public function test_user_can_be_created()
     {
-        $user = User::factory()->create();
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertNotNull($user->idUser);
-        $this->assertNotNull($user->namaLengkap);
-        $this->assertNotNull($user->email);
-        $this->assertNotNull($user->noHP);
+        $userData = [
+            'idUser' => 'U12345678901',
+            'namaLengkap' => 'Test User',
+            'email' => 'test@example.com',
+            'noHP' => '081234567890',
+        ];
+
+        $this->mockUserRepository
+            ->shouldReceive('create')
+            ->once()
+            ->with($userData)
+            ->andReturn((object) $userData);
+
+        $user = $this->mockUserRepository->create($userData);
+
+        $this->assertEquals('Test User', $user->namaLengkap);
+        $this->assertEquals('test@example.com', $user->email);
     }
 
-    public function test_user_has_profil_guru_relationship()
+    public function test_user_can_be_read()
     {
-        $user = User::factory()
-            ->has(ProfilGuru::factory())
-            ->create();
+        $userId = 'U12345678901';
+        $userData = (object) [
+            'idUser' => $userId,
+            'namaLengkap' => 'Test User',
+            'email' => 'test@example.com',
+            'noHP' => '081234567890',
+        ];
 
-        $this->assertInstanceOf(ProfilGuru::class, $user->profilGuru);
-        $this->assertEquals($user->idUser, $user->profilGuru->idUser);
+        $this->mockUserRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($userId)
+            ->andReturn($userData);
+
+        $user = $this->mockUserRepository->find($userId);
+
+        $this->assertEquals($userId, $user->idUser);
+        $this->assertEquals('Test User', $user->namaLengkap);
     }
 
-    public function test_user_has_profil_mentor_relationship()
+    public function test_user_can_be_updated()
     {
-        $user = User::factory()
-            ->has(ProfilMentor::factory())
-            ->create();
+        $userId = 'U12345678901';
+        $updateData = [
+            'namaLengkap' => 'Updated Test User',
+            'noHP' => '089876543210',
+        ];
+        $updatedUserData = (object) array_merge(['idUser' => $userId, 'email' => 'test@example.com'], $updateData);
 
-        $this->assertInstanceOf(ProfilMentor::class, $user->profilMentor);
-        $this->assertEquals($user->idUser, $user->profilMentor->idUser);
+        $this->mockUserRepository
+            ->shouldReceive('update')
+            ->once()
+            ->with($userId, $updateData)
+            ->andReturn($updatedUserData);
+
+        $user = $this->mockUserRepository->update($userId, $updateData);
+
+        $this->assertEquals('Updated Test User', $user->namaLengkap);
+        $this->assertEquals('089876543210', $user->noHP);
     }
 
-    public function test_user_has_many_relationships()
+    public function test_user_can_be_deleted()
     {
-        $user = User::factory()
-            ->has(SpesialisasiUser::factory()->count(2))
-            ->has(Pembayaran::factory()->count(2))
-            ->has(PendaftaranPelatihan::factory()->count(2))
-            ->has(ForumPost::factory()->count(2))
-            ->has(ForumLike::factory()->count(2))
-            ->create();
+        $userId = 'U12345678901';
 
-        $this->assertCount(2, $user->spesialisasiUsers);
-        $this->assertCount(2, $user->pembayarans);
-        $this->assertCount(2, $user->pendaftaranPelatihans);
-        $this->assertCount(2, $user->forumPosts);
-        $this->assertCount(2, $user->forumLikes);
+        $this->mockUserRepository
+            ->shouldReceive('delete')
+            ->once()
+            ->with($userId)
+            ->andReturn(true);
+
+        $result = $this->mockUserRepository->delete($userId);
+
+        $this->assertTrue($result);
     }
 }

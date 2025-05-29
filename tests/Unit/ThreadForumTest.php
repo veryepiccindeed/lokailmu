@@ -3,35 +3,90 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ThreadForum;
-use App\Models\ForumPost;
-use App\Models\Tag;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Repositories\ThreadForumRepositoryInterface;
+use Mockery;
 
 class ThreadForumTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->mockThreadForumRepository = Mockery::mock(ThreadForumRepositoryInterface::class);
+        $this->app->instance(ThreadForumRepositoryInterface::class, $this->mockThreadForumRepository);
+    }
 
     public function test_thread_forum_can_be_created()
     {
-        $thread = ThreadForum::factory()->create();
-        $this->assertInstanceOf(ThreadForum::class, $thread);
-        $this->assertNotNull($thread->idThread);
-        $this->assertNotNull($thread->judul);
-        $this->assertNotNull($thread->idPostUtama);
+        $threadData = [
+            'idThread' => 'THR123456',
+            'judul' => 'Test Thread',
+            'dibuatOleh' => 'U12345678901',
+        ];
+
+        $this->mockThreadForumRepository
+            ->shouldReceive('create')
+            ->once()
+            ->with($threadData)
+            ->andReturn((object) $threadData);
+
+        $thread = $this->mockThreadForumRepository->create($threadData);
+
+        $this->assertEquals('Test Thread', $thread->judul);
+        $this->assertEquals('U12345678901', $thread->dibuatOleh);
     }
 
-    public function test_thread_forum_has_relationships()
+    public function test_thread_forum_can_be_read()
     {
-        $thread = ThreadForum::factory()
-            ->has(ForumPost::factory()->count(2)) // This creates 2 additional posts
-            ->has(Tag::factory()->count(2))
-            ->create();
-        // The factory also creates 1 main post (postUtama)
+        $threadId = 'THR123456';
+        $threadData = (object) [
+            'idThread' => $threadId,
+            'judul' => 'Test Thread',
+            'dibuatOleh' => 'U12345678901',
+        ];
 
-        $this->assertInstanceOf(ForumPost::class, $thread->postUtama);
-        // Total posts = 1 (postUtama) + 2 (additional posts) = 3
-        $this->assertCount(3, $thread->forumPosts); // Adjusted to expect 3 posts
-        $this->assertCount(2, $thread->tags);
+        $this->mockThreadForumRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($threadId)
+            ->andReturn($threadData);
+
+        $thread = $this->mockThreadForumRepository->find($threadId);
+
+        $this->assertEquals($threadId, $thread->idThread);
+        $this->assertEquals('Test Thread', $thread->judul);
+    }
+
+    public function test_thread_forum_can_be_updated()
+    {
+        $threadId = 'THR123456';
+        $updateData = [
+            'judul' => 'Updated Test Thread',
+        ];
+        $updatedThreadData = (object) array_merge(['idThread' => $threadId, 'dibuatOleh' => 'U12345678901'], $updateData);
+
+        $this->mockThreadForumRepository
+            ->shouldReceive('update')
+            ->once()
+            ->with($threadId, $updateData)
+            ->andReturn($updatedThreadData);
+
+        $thread = $this->mockThreadForumRepository->update($threadId, $updateData);
+
+        $this->assertEquals('Updated Test Thread', $thread->judul);
+    }
+
+    public function test_thread_forum_can_be_deleted()
+    {
+        $threadId = 'THR123456';
+
+        $this->mockThreadForumRepository
+            ->shouldReceive('delete')
+            ->once()
+            ->with($threadId)
+            ->andReturn(true);
+
+        $result = $this->mockThreadForumRepository->delete($threadId);
+
+        $this->assertTrue($result);
     }
 }

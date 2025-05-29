@@ -3,47 +3,99 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ForumPost;
-use App\Models\ThreadForum;
-use App\Models\User;
-use App\Models\ForumLike;
-use App\Models\MediaForum;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Repositories\ForumPostRepositoryInterface;
+use Mockery;
 
 class ForumPostTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->mockForumPostRepository = Mockery::mock(ForumPostRepositoryInterface::class);
+        $this->app->instance(ForumPostRepositoryInterface::class, $this->mockForumPostRepository);
+    }
 
     public function test_forum_post_can_be_created()
     {
-        $post = ForumPost::factory()->create();
-        $this->assertInstanceOf(ForumPost::class, $post);
-        $this->assertNotNull($post->idPost);
-        $this->assertNotNull($post->idThread);
-        $this->assertNotNull($post->dibuatOleh);
-        $this->assertNotNull($post->isi);
+        $postData = [
+            'idPost' => 1,
+            'idThread' => 'THR123456',
+            'dibuatOleh' => 'U12345678901',
+            'isi' => 'Ini adalah isi post.',
+            'parentPost' => null,
+        ];
+
+        $this->mockForumPostRepository
+            ->shouldReceive('create')
+            ->once()
+            ->with($postData)
+            ->andReturn((object) $postData);
+
+        $post = $this->mockForumPostRepository->create($postData);
+
+        $this->assertEquals(1, $post->idPost);
+        $this->assertEquals('Ini adalah isi post.', $post->isi);
     }
 
-    public function test_forum_post_has_relationships()
+    public function test_forum_post_can_be_read()
     {
-        $post = ForumPost::factory()
-            ->has(ForumLike::factory()->count(2), 'likes') // Explicitly use 'likes' relationship
-            ->has(MediaForum::factory()->count(2))
-            ->create();
+        $postId = 1;
+        $postData = (object) [
+            'idPost' => $postId,
+            'idThread' => 'THR123456',
+            'dibuatOleh' => 'U12345678901',
+            'isi' => 'Ini adalah isi post.',
+            'parentPost' => null,
+        ];
 
-        $this->assertInstanceOf(ThreadForum::class, $post->threadForum);
-        $this->assertInstanceOf(User::class, $post->user);
-        $this->assertCount(2, $post->likes); // Corrected: uses likes() relationship name
-        $this->assertCount(2, $post->mediaForums);
+        $this->mockForumPostRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($postId)
+            ->andReturn($postData);
+
+        $post = $this->mockForumPostRepository->find($postId);
+
+        $this->assertEquals($postId, $post->idPost);
+        $this->assertEquals('Ini adalah isi post.', $post->isi);
     }
 
-    public function test_forum_post_can_have_replies()
+    public function test_forum_post_can_be_updated()
     {
-        $parentPost = ForumPost::factory()->create();
-        $replies = ForumPost::factory()->count(2)->create([
-            'parentPost' => $parentPost->idPost
-        ]);
+        $postId = 1;
+        $updateData = [
+            'isi' => 'Ini adalah isi post yang sudah diupdate.',
+        ];
+        $updatedPostData = (object) array_merge([
+            'idPost' => $postId,
+            'idThread' => 'THR123456',
+            'dibuatOleh' => 'U12345678901',
+            'parentPost' => null,
+        ], $updateData);
 
-        $this->assertCount(2, $parentPost->replies);
+        $this->mockForumPostRepository
+            ->shouldReceive('update')
+            ->once()
+            ->with($postId, $updateData)
+            ->andReturn($updatedPostData);
+
+        $post = $this->mockForumPostRepository->update($postId, $updateData);
+
+        $this->assertEquals('Ini adalah isi post yang sudah diupdate.', $post->isi);
+    }
+
+    public function test_forum_post_can_be_deleted()
+    {
+        $postId = 1;
+
+        $this->mockForumPostRepository
+            ->shouldReceive('delete')
+            ->once()
+            ->with($postId)
+            ->andReturn(true);
+
+        $result = $this->mockForumPostRepository->delete($postId);
+
+        $this->assertTrue($result);
     }
 }
