@@ -32,3 +32,12 @@ use App\Models\Pelatihan;
     Broadcast::channel('user.{idUser}', function ($user, $idUser) {
         return $user->idUser === $idUser;
     });
+
+    // Channel untuk percakapan
+    Broadcast::channel('chat.{conversationId}', function ($user, $conversationId) {
+        $conversation = \App\Models\Conversation::find($conversationId);
+        if ($conversation) {
+            return $conversation->guru_id === $user->idUser || $conversation->mentor_id === $user->idUser;
+        }
+        return false;
+    });
