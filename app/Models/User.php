@@ -87,4 +87,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(ForumLike::class, 'likeOleh', 'idUser');
     }
+
+    // Conversations where the user is a guru
+    public function conversationsAsGuru()
+    {
+        return $this->hasMany(Conversation::class, 'guru_id', 'idUser');
+    }
+
+    // Conversations where the user is a mentor
+    public function conversationsAsMentor()
+    {
+        return $this->hasMany(Conversation::class, 'mentor_id', 'idUser');
+    }
+
+    // All conversations for the user
+    public function allConversations()
+    {
+        return Conversation::where('guru_id', $this->idUser)
+                            ->orWhere('mentor_id', $this->idUser);
+    }
+
+    // Messages sent by the user
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'idUser');
+    }
+
+    // Messages received by the user (though typically accessed via conversation)
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id', 'idUser');
+    }
 }

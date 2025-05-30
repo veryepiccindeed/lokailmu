@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Authentication;
 use App\Http\Controllers\PesananPelatihanController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,4 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pesan-pelatihan', [PesananPelatihanController::class, 'store']);
     Route::get('/pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
     Route::put('/pesanan-pelatihan/{id}/status', [PesananPelatihanController::class, 'updateStatus']);
+
+    // Chat Routes
+    Route::get('/conversations', [ChatController::class, 'getConversations']);
+    Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'getMessages']);
+    Route::post('/messages', [ChatController::class, 'sendMessage']);
 });
