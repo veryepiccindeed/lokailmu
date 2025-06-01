@@ -44,4 +44,12 @@ class ThreadForum extends Model
     {
         return $this->belongsToMany(Tag::class, 'tagthreads', 'idThread', 'idTag');
     }
+
+    /**
+     * The user that created this thread.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'dibuatOleh', 'idUser');
+    }
 }
