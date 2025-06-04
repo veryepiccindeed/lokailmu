@@ -29,4 +29,4 @@ class ProfilMentor extends Model
     {
         return $this->belongsTo(User::class, 'idUser', 'idUser');
     }
-} 
+}

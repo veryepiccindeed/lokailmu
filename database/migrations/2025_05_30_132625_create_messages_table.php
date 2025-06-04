@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade');
-            $table->string('sender_id');
+            $table->string('sender_id', 12);
             $table->foreign('sender_id')->references('idUser')->on('users')->onDelete('cascade');
-            $table->string('receiver_id');
+            $table->string('receiver_id', 12);
             $table->foreign('receiver_id')->references('idUser')->on('users')->onDelete('cascade');
             $table->text('body');
             $table->timestamp('read_at')->nullable();

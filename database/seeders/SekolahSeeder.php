@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Sekolah;
 
@@ -51,7 +50,6 @@ class SekolahSeeder extends Seeder
                 'alamatSekolah' => 'Jl. Menteng Raya No. 31, Jakarta Pusat'
             ]
         ];
-
         foreach ($sekolahs as $sekolah) {
             Sekolah::create($sekolah);
         }

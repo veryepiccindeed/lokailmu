@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('spesialisasiusers', function (Blueprint $table) {
             $table->foreign('idUser', 'FK_idUser_spesialisasi')
             ->references('idUser')->on('users')
-            ->onDelete('no action') // Mungkin 'cascade' lebih cocok?
+            ->onDelete('cascade') // Changed from 'no action' to 'cascade'
             ->onUpdate('no action');
         });
     }

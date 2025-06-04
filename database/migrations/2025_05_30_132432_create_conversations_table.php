@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->string('guru_id');
+            $table->string('guru_id', 12);
             $table->foreign('guru_id')->references('idUser')->on('users')->onDelete('cascade');
-            $table->string('mentor_id');
+            $table->string('mentor_id', 12);
             $table->foreign('mentor_id')->references('idUser')->on('users')->onDelete('cascade');
             $table->timestamp('last_message_at')->nullable();
             $table->timestamps();

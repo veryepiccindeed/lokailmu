@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
          User::factory(10)->create();
 
          $this->call([
+            SekolahSeeder::class,
             ProfilMentorSeeder::class,
             ProfilGuruSeeder::class,
             PelatihanSeeder::class,
-            SekolahSeeder::class,
         ]);
     }
 }

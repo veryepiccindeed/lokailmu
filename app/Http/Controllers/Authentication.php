@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Sekolah;
 use App\Models\ProfilGuru;
 use App\Models\ProfilMentor;
+use App\Models\SpesialisasiUser; // Added import
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\IdGenerator;
@@ -132,7 +133,9 @@ class Authentication extends Controller
                 'NUPTK' => 'required|unique:profilgurus,NUPTK',
                 'tingkatPengajar' => 'required',
                 'pathKTP' => 'nullable',
-                'tgl_lahir' => 'required|date'
+                'tgl_lahir' => 'required|date',
+                'spesialisasi' => 'required|array|max:10', // Modified validation
+                'spesialisasi.*' => 'string|max:45' // Added validation for array items
             ]);
 
             // Mencari sekolah berdasarkan inputan NPSN
@@ -169,12 +172,21 @@ class Authentication extends Controller
                     'pathKTP' => $request->pathKTP,
                 ]);
 
+                // Create spesialisasi entries
+                foreach ($request->spesialisasi as $spesialisasi) {
+                    SpesialisasiUser::create([
+                        'idUser' => $idUser,
+                        'spesialisasi' => $spesialisasi,
+                    ]);
+                }
+
                 // Jika semua proses berhasil, commit transaction
                 DB::commit();
             
                 return response()->json([
                     'user' => $user,
                     'profil_guru' => $profilGuru,
+                    'spesialisasi' => $request->spesialisasi // Added spesialisasi to response
                 ], 201);
 
             } catch (\Exception $e) {
@@ -208,7 +220,8 @@ class Authentication extends Controller
                 'email' => 'required|email|unique:users,email',
                 'no_hp' => 'required|unique:users,noHP',
                 'password' => 'required|min:6',
-                'spesialisasi' => 'required',
+                'spesialisasi' => 'required|array|max:10', // Modified validation
+                'spesialisasi.*' => 'string|max:45', // Added validation for array items
                 'pathCV' => 'nullable',
                 'pathSertifikat' => 'nullable',
                 'tgl_lahir' => 'required|date'
@@ -232,10 +245,17 @@ class Authentication extends Controller
             
                 $profilMentor = ProfilMentor::create([
                     'idUser' => $idUser,
-                    'spesialisasi' => $request->spesialisasi,
                     'pathCV' => $request->pathCV,
                     'pathSertifikat' => $request->pathSertifikat,
                 ]);
+
+                // Create spesialisasi entries
+                foreach ($request->spesialisasi as $spesialisasi) {
+                    SpesialisasiUser::create([
+                        'idUser' => $idUser,
+                        'spesialisasi' => $spesialisasi,
+                    ]);
+                }
 
                 // Jika semua proses berhasil, commit transaction
                 DB::commit();
@@ -243,6 +263,7 @@ class Authentication extends Controller
                 return response()->json([
                     'user' => $user,
                     'profil_mentor' => $profilMentor,
+                    'spesialisasi' => $request->spesialisasi // Added spesialisasi to response
                 ], 201);
 
             } catch (\Exception $e) {

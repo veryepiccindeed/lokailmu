@@ -38,10 +38,10 @@ LokaIlmu adalah solusi mobile yang terdiri dari dua aplikasi terpisah untuk mend
 ### 3. Backend Development - API Terpadu
 - [x] 3.1. Implementasi sistem autentikasi terpadu
 - [x] 3.2. API login untuk Guru dan Pelatih (endpoint terpisah)
-- [ ] 3.3. API registrasi untuk Guru dengan validasi kredensial (nama, email/hp, password, NPSN, NUPTK, tingkat pengajar, spesialisasi, foto KTP)
-- [ ] 3.4. API registrasi untuk Pelatih dengan validasi kredensial (nama, email/hp, password, spesialisasi, upload berkas, foto KTP)
+- [x] 3.3. API registrasi untuk Guru dengan validasi kredensial (nama, email/hp, password, NPSN, NUPTK, tingkat pengajar, spesialisasi, foto KTP)
+- [x] 3.4. API registrasi untuk Pelatih dengan validasi kredensial (nama, email/hp, password, spesialisasi, upload berkas, foto KTP)
 - [ ] 3.5. Manajemen profil pengguna untuk kedua jenis pengguna
-- [ ] 3.6. Implementasi sistem otorisasi dan role-based access control
+- [x] 3.6. Implementasi sistem otorisasi dan role-based access control
 
 ### 4. Frontend Development - LokaIlmu Guru (Autentikasi & Profil)
 - [ ] 4.1. Implementasi halaman login aplikasi Guru
@@ -57,8 +57,8 @@ LokaIlmu adalah solusi mobile yang terdiri dari dua aplikasi terpisah untuk mend
 
 ### 6. Backend Development - Fitur Pencarian dan Pesan
 - [ ] 6.1. API pencarian mentor/pelatih untuk guru
-- [ ] 6.2. Implementasi sistem chat terpadu
-- [ ] 6.3. Implementasi sistem pemesanan terpadu
+- [x] 6.2. Implementasi sistem chat terpadu
+- [x] 6.3. Implementasi sistem pemesanan terpadu
 - [ ] 6.4. API untuk mengelola percakapan antara guru dan pelatih
 - [ ] 6.5. Integrasi dengan sistem notifikasi
 - [ ] 6.6. Implementasi filter dan pencarian lanjutan
@@ -137,11 +137,11 @@ LokaIlmu adalah solusi mobile yang terdiri dari dua aplikasi terpisah untuk mend
 - [ ] 17.4. Statistik dan tren rating
 
 ### 18. Backend Development - Forum Diskusi
-- [ ] 18.1. API untuk membuat topik diskusi baru
-- [ ] 18.2. API untuk menampilkan daftar diskusi
-- [ ] 18.3. API untuk komentar dan balasan
-- [ ] 18.4. Sistem kategori dan tag untuk diskusi
-- [ ] 18.5. Implementasi pencarian dalam forum
+- [x] 18.1. API untuk membuat topik diskusi baru
+- [x] 18.2. API untuk menampilkan daftar diskusi
+- [x] 18.3. API untuk komentar dan balasan
+- [x] 18.4. Sistem kategori dan tag untuk diskusi
+- [x] 18.5. Implementasi pencarian dalam forum
 
 ### 19. Frontend Development - LokaIlmu Guru (Forum Diskusi)
 - [ ] 19.1. Halaman utama forum dengan daftar topik

@@ -118,4 +118,39 @@ class ChatController extends Controller
 
         return response()->json($message->load('sender', 'receiver'));
     }
+
+    public function editMessage(Request $request, $messageId)
+    {
+        $request->validate([
+            'body' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        $message = Message::findOrFail($messageId);
+
+        // Ensure the authenticated user is the sender of the message
+        if ($message->sender_id !== $user->idUser) {
+            return response()->json(['error' => 'Unauthorized to edit this message.'], 403);
+        }
+
+        $message->body = $request->body;
+        $message->save();
+
+        return response()->json($message->load('sender', 'receiver'));
+    }
+
+    public function deleteMessage($messageId)
+    {
+        $user = Auth::user();
+        $message = Message::findOrFail($messageId);
+
+        // Ensure the authenticated user is the sender of the message
+        if ($message->sender_id !== $user->idUser) {
+            return response()->json(['error' => 'Unauthorized to delete this message.'], 403);
+        }
+
+        $message->delete();
+
+        return response()->json(null, 204);
+    }
 }
