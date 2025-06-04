@@ -21,7 +21,9 @@ Route::post('/register-mentor', [Authentication::class, 'registerMentor']);
 // Yg butuh middleware
 Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::post('/logout', [Authentication::class, 'logout']);
+    // Auth websocket
     Route::post('/broadcasting/auth', function (Request $request) {return Broadcast::auth($request);});
+    // Pesanan Pelatihan Routes
     Route::get('/pesanan-pelatihan', [PesananPelatihanController::class, 'index']);
     Route::post('/pesan-pelatihan', [PesananPelatihanController::class, 'store']);
     Route::get('/pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
@@ -31,6 +33,8 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::get('/conversations', [ChatController::class, 'getConversations']);
     Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'getMessages']);
     Route::post('/messages', [ChatController::class, 'sendMessage']);
+    Route::put('/messages/{messageId}', [ChatController::class, 'editMessage']);
+    Route::delete('/messages/{messageId}', [ChatController::class, 'deleteMessage']);
 
     // Forum discussion routes
     Route::get('/forum', [ForumController::class, 'index']);
@@ -40,7 +44,7 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::delete('/forum/{idThread}', [ForumController::class, 'deleteThread']);
     Route::post('/forum/{idThread}/comment', [ForumController::class, 'comment']);
     Route::get('/forum/search', [ForumController::class, 'search']);
-    // Post update/delete
+    // Post update/delete post forum
     Route::put('/forum/post/{idPost}', [ForumController::class, 'updatePost']);
     Route::delete('/forum/post/{idPost}', [ForumController::class, 'deletePost']);
 });
