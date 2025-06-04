@@ -32,7 +32,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('profilgurus', function (Blueprint $table) {
-            $table->dropForeign('FK_idSekolahr_profilGuru');
+            $table->dropForeign('FK_NPSN_profilGuru'); // Corrected foreign key name
             $table->dropForeign('FK_idUser_profilGuru');
         });
     }

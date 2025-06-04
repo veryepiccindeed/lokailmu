@@ -13,10 +13,12 @@ class ProfilGuruFactory extends Factory
 
     public function definition(): array
     {
+        $sekolah = Sekolah::inRandomOrder()->first(); // Ambil data sekolah secara acak dari tabel hasil seeding
+
         return [
             'idUser' => \App\Models\User::factory(),
             'NUPTK' => $this->faker->unique()->numerify('################'), // 16 digit NUPTK
-            'NPSN' => \App\Models\Sekolah::factory()->create()->NPSN, // Diubah dari idSekolah ke NPSN
+            'NPSN' => $sekolah->NPSN, // Ambil NPSN dari data sekolah
             'tingkatPengajar' => $this->faker->randomElement(['SD', 'SMP', 'SMA']),
             'pathKTP' => 'ktp_images/' . $this->faker->lexify('????????????') . '.jpg',
         ];
