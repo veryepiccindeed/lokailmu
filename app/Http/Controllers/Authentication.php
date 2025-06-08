@@ -127,7 +127,7 @@ class Authentication extends Controller
             $request->validate([
                 'nama_lengkap' => 'required|string',
                 'email' => 'required|email|unique:users,email',
-                'no_hp' => 'required|unique:users,noHP',
+                'no_hp' => 'nullable|unique:users,noHP',
                 'password' => 'required|min:6',
                 'NPSN' => 'required|exists:sekolahs,NPSN',
                 'NUPTK' => 'required|unique:profilgurus,NUPTK',
