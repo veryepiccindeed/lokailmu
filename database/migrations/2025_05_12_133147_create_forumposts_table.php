@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('isi');
             $table->unsignedBigInteger('parentPost')->nullable(); // Foreign key (self-reference)
             $table->timestamp('tglPost')->useCurrent(); // Default CURRENT_TIMESTAMP
+            $table->timestamps(); // Added timestamps for created_at and updated_at
 
             // Indexes
             $table->index('idThread');
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('forumposts');
+        Schema::dropIfExists('forumposts'); // Pastikan nama tabelnya 'forumposts'
     }
 };

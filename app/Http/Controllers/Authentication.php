@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Sekolah;
 use App\Models\ProfilGuru;
 use App\Models\ProfilMentor;
-use App\Models\SpesialisasiUser; // Added import
+use App\Models\SpesialisasiUser; 
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\IdGenerator;
@@ -132,9 +132,9 @@ class Authentication extends Controller
                 'NPSN' => 'required|exists:sekolahs,NPSN',
                 'NUPTK' => 'required|unique:profilgurus,NUPTK',
                 'tingkatPengajar' => 'required',
-                'pathKTP' => 'nullable',
+                'pathKTP' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validate KTP image
                 'tgl_lahir' => 'required|date',
-                'spesialisasi' => 'required|array|max:10', // Modified validation
+                'spesialisasi' => 'required|array|max:10',
                 'spesialisasi.*' => 'string|max:45' // Added validation for array items
             ]);
 
@@ -162,6 +162,12 @@ class Authentication extends Controller
                     'password' => Hash::make($request->password),
                     'tglLahir' => $request->tgl_lahir,
                 ]);
+
+                // Handle KTP image upload
+                $pathKTP = null;
+                if ($request->hasFile('pathKTP')) {
+                    $pathKTP = $request->file('pathKTP')->store('ktp_images', 'public');
+                }
             
                 $profilGuru = ProfilGuru::create([
                     'idUser' => $idUser,
@@ -169,7 +175,7 @@ class Authentication extends Controller
                     'idSekolah' => $sekolah->idSekolah,
                     'NUPTK' => $request->NUPTK,
                     'tingkatPengajar' => $request->tingkatPengajar,
-                    'pathKTP' => $request->pathKTP,
+                    'pathKTP' => $pathKTP, // Save the uploaded KTP path
                 ]);
 
                 // Create spesialisasi entries
@@ -186,7 +192,7 @@ class Authentication extends Controller
                 return response()->json([
                     'user' => $user,
                     'profil_guru' => $profilGuru,
-                    'spesialisasi' => $request->spesialisasi // Added spesialisasi to response
+                    'spesialisasi' => $request->spesialisasi
                 ], 201);
 
             } catch (\Exception $e) {
@@ -284,6 +290,84 @@ class Authentication extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat registrasi mentor',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editProfileGuru(Request $request)
+    {
+        try {
+            $request->validate([
+                'nama_lengkap' => 'nullable|string',
+                'email' => 'nullable|email|unique:users,email,' . $request->user()->idUser . ',idUser',
+                'no_hp' => 'nullable|unique:users,noHP,' . $request->user()->idUser . ',idUser',
+                'password' => 'nullable|min:6',
+                'NPSN' => 'nullable|exists:sekolahs,NPSN',
+                'NUPTK' => 'nullable|unique:profilgurus,NUPTK,' . $request->user()->profilGuru->idProfilGuru . ',idProfilGuru',
+                'tingkatPengajar' => 'nullable|string',
+                'tgl_lahir' => 'nullable|date',
+                'spesialisasi' => 'nullable|array|max:10',
+                'spesialisasi.*' => 'string|max:45'
+            ]);
+
+            DB::transaction(function () use ($request) {
+                $user = $request->user();
+
+                // Update user data
+                if ($request->filled('nama_lengkap')) {
+                    $user->namaLengkap = $request->nama_lengkap;
+                }
+                if ($request->filled('email')) {
+                    $user->email = $request->email;
+                }
+                if ($request->filled('no_hp')) {
+                    $user->noHP = $request->no_hp;
+                }
+                if ($request->filled('password')) {
+                    $user->password = Hash::make($request->password);
+                }
+                if ($request->filled('tgl_lahir')) {
+                    $user->tglLahir = $request->tgl_lahir;
+                }
+                $user->save();
+
+                // Update profil guru
+                $profilGuru = $user->profilGuru;
+                if ($request->filled('NPSN')) {
+                    $sekolah = Sekolah::where('NPSN', $request->NPSN)->first();
+                    $profilGuru->NPSN = $request->NPSN;
+                    $profilGuru->idSekolah = $sekolah->idSekolah;
+                }
+                if ($request->filled('NUPTK')) {
+                    $profilGuru->NUPTK = $request->NUPTK;
+                }
+                if ($request->filled('tingkatPengajar')) {
+                    $profilGuru->tingkatPengajar = $request->tingkatPengajar;
+                }
+                $profilGuru->save();
+
+                // Update spesialisasi
+                if ($request->filled('spesialisasi')) {
+                    SpesialisasiUser::where('idUser', $user->idUser)->delete();
+                    foreach ($request->spesialisasi as $spesialisasi) {
+                        SpesialisasiUser::create([
+                            'idUser' => $user->idUser,
+                            'spesialisasi' => $spesialisasi,
+                        ]);
+                    }
+                }
+            });
+
+            return response()->json(['message' => 'Profil berhasil diperbarui'], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat memperbarui profil',
                 'error' => $e->getMessage()
             ], 500);
         }

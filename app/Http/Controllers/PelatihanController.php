@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Events\PesananPelatihanUpdated;
 
-class PesananPelatihanController extends Controller
+class PelatihanController extends Controller
 {
     // List all orders for authenticated user (as Guru or Mentor)
     public function index(Request $request)

@@ -40,24 +40,27 @@ class ForumController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul'=>'required|string',
-            'isi'=>'required|string',
-            'tags'=>'array'
+            'judul' => 'required|string',
+            'isi' => 'required|string',
+            'tags' => 'array',
+            'kategori' => 'required|in:informatika,sains,bahasa,matematika', // Validate kategori
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Validate images
         ]);
 
-        return DB::transaction(function() use($request) {
+        return DB::transaction(function () use ($request) {
             $thread = ThreadForum::create([
-                'idThread'=> (string) Str::uuid(),
-                'judul'=> $request->judul,
-                'dibuatOleh'=> Auth::id(),
+                'idThread' => (string) Str::uuid(),
+                'judul' => $request->judul,
+                'dibuatOleh' => Auth::id(),
+                'kategori' => $request->kategori, // Save kategori
             ]);
 
             $post = ForumPost::create([
-                'idThread'=> $thread->idThread,
-                'dibuatOleh'=> Auth::id(),
-                'isi'=> $request->isi,
-                'parentPost'=> null,
-            ]); 
+                'idThread' => $thread->idThread,
+                'dibuatOleh' => Auth::id(),
+                'isi' => $request->isi,
+                'parentPost' => null,
+            ]);
 
             $thread->idPostUtama = $post->idPost;
             $thread->save();
@@ -65,13 +68,25 @@ class ForumController extends Controller
             if ($request->has('tags')) {
                 $tagIds = [];
                 foreach ($request->tags as $tagName) {
-                    $tag = Tag::firstOrCreate(['tag'=>$tagName]);
+                    $tag = Tag::firstOrCreate(['tag' => $tagName]);
                     $tagIds[] = $tag->idTag;
                 }
                 $thread->tags()->sync($tagIds);
             }
 
-            return response()->json($thread->load('tags','postUtama','user'), 201);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('forum_images', 'public');
+                    DB::table('mediaforums')->insert([
+                        'idPost' => $post->idPost,
+                        'urlMedia' => $path,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            return response()->json($thread->load('tags', 'postUtama', 'user'), 201);
         });
     }
 

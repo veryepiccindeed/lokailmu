@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Authentication;
-use App\Http\Controllers\PesananPelatihanController;
+use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ForumController;
 
@@ -24,10 +24,10 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     // Auth websocket
     Route::post('/broadcasting/auth', function (Request $request) {return Broadcast::auth($request);});
     // Pesanan Pelatihan Routes
-    Route::get('/pesanan-pelatihan', [PesananPelatihanController::class, 'index']);
-    Route::post('/pesan-pelatihan', [PesananPelatihanController::class, 'store']);
-    Route::get('/pesanan-pelatihan/{id}', [PesananPelatihanController::class, 'show']);
-    Route::put('/pesanan-pelatihan/{id}/status', [PesananPelatihanController::class, 'updateStatus']);
+    Route::get('/pesanan-pelatihan', [PelatihanController::class, 'index']);
+    Route::post('/pesan-pelatihan', [PelatihanController::class, 'store']);
+    Route::get('/pesanan-pelatihan/{id}', [PelatihanController::class, 'show']);
+    Route::put('/pesanan-pelatihan/{id}/status', [PelatihanController::class, 'updateStatus']);
 
     // Chat Routes
     Route::get('/conversations', [ChatController::class, 'getConversations']);
@@ -47,4 +47,5 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     // Post update/delete post forum
     Route::put('/forum/post/{idPost}', [ForumController::class, 'updatePost']);
     Route::delete('/forum/post/{idPost}', [ForumController::class, 'deletePost']);
+    Route::put('/edit-profile-guru', [Authentication::class, 'editProfileGuru']);
 });

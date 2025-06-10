@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('judul', 255);
             $table->string('dibuatOleh');
             $table->unsignedBigInteger('idPostUtama')->nullable(); // Changed back to unsignedBigInteger
+            $table->enum('kategori', ['informatika', 'sains', 'bahasa', 'matematika']);
             $table->timestamps();
 
             // Index untuk foreign key
