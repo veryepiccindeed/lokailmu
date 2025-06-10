@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ProfilMentorSeeder::class,
             ProfilGuruSeeder::class,
             PelatihanSeeder::class,
+            ThreadForumSeeder::class,
+            ForumPostSeeder::class,
         ]);
     }
 }
