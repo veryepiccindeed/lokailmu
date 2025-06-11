@@ -15,6 +15,42 @@ use App\Helpers\IdGenerator;
 
 class Authentication extends Controller
 {
+    public function getProfileGuru(Request $request)
+    {
+        // Load related profilGuru and spesialisasiUsers
+        $user = $request->user()->load(['profilGuru', 'spesialisasiUsers']);
+        
+        if (!$user->profilGuru) {
+            return response()->json([
+                'message' => 'Profil guru tidak ditemukan.'
+            ], 404);
+        }
+        
+        return response()->json([
+            'user' => $user,
+            'profil_guru' => $user->profilGuru,
+            'spesialisasi' => $user->spesialisasiUsers
+        ], 200);
+    }
+    
+    public function getProfileMentor(Request $request)
+    {
+        // Load related profilMentor and spesialisasiUsers
+        $user = $request->user()->load(['profilMentor', 'spesialisasiUsers']);
+        
+        if (!$user->profilMentor) {
+            return response()->json([
+                'message' => 'Profil mentor tidak ditemukan.'
+            ], 404);
+        }
+        
+        return response()->json([
+            'user' => $user,
+            'profil_mentor' => $user->profilMentor,
+            'spesialisasi' => $user->spesialisasiUsers
+        ], 200);
+    }
+    
     public function loginGuru(Request $request)
     {
         try {
