@@ -8,9 +8,8 @@ use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ForumController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->get('/profile/guru', [Authentication::class, 'getProfileGuru']);
+Route::middleware('auth:sanctum')->get('/profile/mentor', [Authentication::class, 'getProfileMentor']);
 
 //Autentikasi
 Route::post('/login-guru', [Authentication::class, 'loginGuru']);
