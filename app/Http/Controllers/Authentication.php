@@ -380,7 +380,6 @@ class Authentication extends Controller
                 if ($request->filled('NPSN')) {
                     $sekolah = Sekolah::where('NPSN', $request->NPSN)->first();
                     $profilGuru->NPSN = $request->NPSN;
-                    $profilGuru->idSekolah = $sekolah->idSekolah;
                 }
                 if ($request->filled('NUPTK')) {
                     $profilGuru->NUPTK = $request->NUPTK;
