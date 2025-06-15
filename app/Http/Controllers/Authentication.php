@@ -334,13 +334,20 @@ class Authentication extends Controller
     public function editProfileGuru(Request $request)
     {
         try {
+            // Check if the user role is guru (has a guru profile)
+            if (!$request->user()->profilGuru) {
+                return response()->json([
+                    'message' => 'Akses ditolak. Hanya guru yang dapat mengakses API ini'
+                ], 403);
+            }
+
             $request->validate([
                 'nama_lengkap' => 'nullable|string',
                 'email' => 'nullable|email|unique:users,email,' . $request->user()->idUser . ',idUser',
                 'no_hp' => 'nullable|unique:users,noHP,' . $request->user()->idUser . ',idUser',
                 'password' => 'nullable|min:6',
                 'NPSN' => 'nullable|exists:sekolahs,NPSN',
-                'NUPTK' => 'nullable|unique:profilgurus,NUPTK,' . $request->user()->profilGuru->idProfilGuru . ',idProfilGuru',
+                'NUPTK' => 'nullable|unique:profilgurus,NUPTK,' . $request->user()->idUser . ',idUser',
                 'tingkatPengajar' => 'nullable|string',
                 'tgl_lahir' => 'nullable|date',
                 'spesialisasi' => 'nullable|array|max:10',
