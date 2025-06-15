@@ -20,6 +20,8 @@ Route::post('/register-mentor', [Authentication::class, 'registerMentor']);
 // Yg butuh middleware
 Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::post('/logout', [Authentication::class, 'logout']);
+    Route::put('/edit-profile-guru', [Authentication::class, 'editProfileGuru']);
+    Route::put('/edit-profile-mentor', [Authentication::class, 'editProfileMentor']);
     // Auth websocket
     Route::post('/broadcasting/auth', function (Request $request) {return Broadcast::auth($request);});
     // Pesanan Pelatihan Routes
@@ -46,5 +48,4 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     // Post update/delete post forum
     Route::put('/forum/post/{idPost}', [ForumController::class, 'updatePost']);
     Route::delete('/forum/post/{idPost}', [ForumController::class, 'deletePost']);
-    Route::put('/edit-profile-guru', [Authentication::class, 'editProfileGuru']);
 });

@@ -334,13 +334,20 @@ class Authentication extends Controller
     public function editProfileGuru(Request $request)
     {
         try {
+            // Check if the user role is guru (has a guru profile)
+            if (!$request->user()->profilGuru) {
+                return response()->json([
+                    'message' => 'Akses ditolak. Hanya guru yang dapat mengakses API ini'
+                ], 403);
+            }
+
             $request->validate([
                 'nama_lengkap' => 'nullable|string',
                 'email' => 'nullable|email|unique:users,email,' . $request->user()->idUser . ',idUser',
                 'no_hp' => 'nullable|unique:users,noHP,' . $request->user()->idUser . ',idUser',
                 'password' => 'nullable|min:6',
                 'NPSN' => 'nullable|exists:sekolahs,NPSN',
-                'NUPTK' => 'nullable|unique:profilgurus,NUPTK,' . $request->user()->profilGuru->idProfilGuru . ',idProfilGuru',
+                'NUPTK' => 'nullable|unique:profilgurus,NUPTK,' . $request->user()->idUser . ',idUser',
                 'tingkatPengajar' => 'nullable|string',
                 'tgl_lahir' => 'nullable|date',
                 'spesialisasi' => 'nullable|array|max:10',
@@ -405,6 +412,92 @@ class Authentication extends Controller
             return response()->json([
                 'message' => 'Terjadi kesalahan saat memperbarui profil',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editProfileMentor(Request $request)
+    {
+        try {
+            // Check if the user role is mentor (has a mentor profile)
+            if (!$request->user()->profilMentor) {
+                return response()->json([
+                    'message' => 'Akses ditolak. Hanya mentor yang dapat mengakses API ini'
+                ], 403);
+            }
+
+            $request->validate([
+                'nama_lengkap'    => 'nullable|string',
+                'email'           => 'nullable|email|unique:users,email,' . $request->user()->idUser . ',idUser',
+                'no_hp'           => 'nullable|unique:users,noHP,' . $request->user()->idUser . ',idUser',
+                'password'        => 'nullable|min:6',
+                'tgl_lahir'       => 'nullable|date',
+                'pathCV'          => 'nullable|mimes:pdf|max:2048', 
+                'pathSertifikat'  => 'nullable',
+                'spesialisasi'    => 'nullable|array|max:10',
+                'spesialisasi.*'  => 'string|max:45'
+            ]);
+
+            DB::transaction(function () use ($request) {
+                $user = $request->user();
+                
+                // Update user data
+                if ($request->filled('nama_lengkap')) {
+                    $user->namaLengkap = $request->nama_lengkap;
+                }
+                if ($request->filled('email')) {
+                    $user->email = $request->email;
+                }
+                if ($request->filled('no_hp')) {
+                    $user->noHP = $request->no_hp;
+                }
+                if ($request->filled('password')) {
+                    $user->password = Hash::make($request->password);
+                }
+                if ($request->filled('tgl_lahir')) {
+                    $user->tglLahir = $request->tgl_lahir;
+                }
+                $user->save();
+
+                // Update profil mentor
+                $profilMentor = $user->profilMentor;
+                if ($request->hasFile('pathCV')) {
+                    $pathCV = $request->file('pathCV')->store('cv_files', 'public');
+                    $profilMentor->pathCV = $pathCV;
+                } elseif ($request->filled('pathCV')) {
+                    $profilMentor->pathCV = $request->pathCV;
+                }
+                if ($request->hasFile('pathSertifikat')) {
+                    $pathSertifikat = $request->file('pathSertifikat')->store('sertifikat_files', 'public');
+                    $profilMentor->pathSertifikat = $pathSertifikat;
+                } elseif ($request->filled('pathSertifikat')) {
+                    $profilMentor->pathSertifikat = $request->pathSertifikat;
+                }
+                $profilMentor->save();
+
+                // Update spesialisasi
+                if ($request->filled('spesialisasi')) {
+                    SpesialisasiUser::where('idUser', $user->idUser)->delete();
+                    foreach ($request->spesialisasi as $spesialisasi) {
+                        SpesialisasiUser::create([
+                            'idUser'      => $user->idUser,
+                            'spesialisasi'=> $spesialisasi,
+                        ]);
+                    }
+                }
+            });
+
+            return response()->json(['message' => 'Profil mentor berhasil diperbarui'], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat memperbarui profil mentor',
+                'error'   => $e->getMessage()
             ], 500);
         }
     }
