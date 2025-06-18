@@ -1,6 +1,6 @@
 # LokaIlmu - Backend
 
-Repositori ini berisi source code untuk aplikasi LokaIlmu, sebuah platform pembelajaran online yang dirancang untuk menghubungkan guru, khususnya yang mengajar di sekolah terakreditasi B, dan mentor.
+Repositori ini berisi source code untuk aplikasi LokaIlmu, sebuah platform pelatihan online yang dirancang untuk guru, khususnya yang mengajar di sekolah terakreditasi B, oleh mentor yang ahli di bidangnya.
 
 ## Gambaran Umum
 
