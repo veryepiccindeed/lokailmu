@@ -4,7 +4,7 @@ Repositori ini berisi source code untuk aplikasi LokaIlmu, sebuah platform pelat
 
 ## Gambaran Umum
 
-Backend ini dibangun menggunakan kerangka kerja **Laravel** dan menyediakan RESTful API untuk mendukung semua fitur aplikasi LokaIlmu, termasuk:
+Backend ini dibangun menggunakan framework **Laravel** dan menyediakan RESTful API untuk mendukung semua fitur aplikasi LokaIlmu, termasuk:
 - Otentikasi pengguna (guru, mentor)
 - Manajemen profil
 - Manajemen kursus dan pelatihan
