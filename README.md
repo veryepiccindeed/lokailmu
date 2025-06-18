@@ -9,9 +9,8 @@ Backend ini dibangun menggunakan kerangka kerja **Laravel** dan menyediakan REST
 - Manajemen profil
 - Manajemen kursus dan pelatihan
 - Diskusi forum
-- Dan banyak lagi.
 
-**Catatan:** Repositori ini hanya berisi layanan backend. Aplikasi frontend dikelola di repositori terpisah.
+**Catatan:** Repositori ini hanya berisi layanan backend. Aplikasi frontend dikelola di repositori terpisah. Repositori frontend dapat dilihat di https://github.com/KingPublic/LokaIlmu_FE_Guru
 
 ## Memulai
 
@@ -34,7 +33,7 @@ Backend ini dibangun menggunakan kerangka kerja **Laravel** dan menyediakan REST
     composer install
     ```
 
-3.  **Buat file lingkungan Anda:**
+3.  **Buat file environment Anda:**
     ```bash
     cp .env.example .env
     ```
@@ -59,7 +58,7 @@ Backend ini dibangun menggunakan kerangka kerja **Laravel** dan menyediakan REST
 
 ### Menjalankan Server
 
-Untuk memulai server pengembangan lokal, jalankan perintah berikut:
+Untuk memulai server development lokal, jalankan perintah berikut:
 ```bash
 php artisan serve
 ```
