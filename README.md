@@ -1,6 +1,6 @@
 # LokaIlmu - Backend
 
-Repositori ini berisi source code untuk aplikasi LokaIlmu, sebuah platform pembelajaran online yang dirancang untuk menghubungkan guru, mentor, dan siswa.
+Repositori ini berisi source code untuk aplikasi LokaIlmu, sebuah platform pembelajaran online yang dirancang untuk menghubungkan guru, khususnya yang mengajar di sekolah terakreditasi B, dan mentor.
 
 ## Gambaran Umum
 
@@ -38,7 +38,7 @@ Backend ini dibangun menggunakan kerangka kerja **Laravel** dan menyediakan REST
     cp .env.example .env
     ```
 
-4.  **Hasilkan kunci aplikasi:**
+4.  **Generate kunci aplikasi:**
     ```bash
     php artisan key:generate
     ```
